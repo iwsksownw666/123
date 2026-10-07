@@ -18,15 +18,42 @@ jobs:
         run: |
           sudo xcode-select -s /Applications/Xcode_15.4.app
           xcodebuild -version
-
-      - name: Install XcodeGen
-        run: |
           brew install xcodegen
-          xcodegen --version
+
+      - name: Make spec
+        run: |
+          printf '%s\n' \
+            'name: DiscordBotManager' \
+            'options:' \
+            '  bundleIdPrefix: com.ethereal' \
+            '  objectVersion: 56' \
+            'settings:' \
+            '  base:' \
+            '    IPHONEOS_DEPLOYMENT_TARGET: "16.0"' \
+            '    SWIFT_VERSION: "5.0"' \
+            '    TARGETED_DEVICE_FAMILY: "1,2"' \
+            'targets:' \
+            '  DiscordBotManager:' \
+            '    type: application' \
+            '    platform: iOS' \
+            '    sources: [App]' \
+            '    settings:' \
+            '      base:' \
+            '        PRODUCT_BUNDLE_IDENTIFIER: com.ethereal.discordbotmanager' \
+            '        CODE_SIGNING_ALLOWED: "NO"' \
+            '        CODE_SIGNING_REQUIRED: "NO"' \
+            '        CODE_SIGN_IDENTITY: ""' \
+            '        CODE_SIGN_STYLE: Manual' \
+            '        DEVELOPMENT_TEAM: ""' \
+            '        INFOPLIST_KEY_UILaunchScreen_Generation: "YES"' \
+            '        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES"' \
+            > project.yml
+          cat project.yml
 
       - name: Gen project
         run: |
           xcodegen generate
+          ls -la
           grep objectVersion DiscordBotManager.xcodeproj/project.pbxproj
 
       - name: Build
